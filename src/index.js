@@ -1,5 +1,6 @@
 let addToy = false;
 let like = 0
+const toyInfo = {  }
 document.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#new-toy-btn");
   const toyFormContainer = document.querySelector(".container");
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   fetchAndysToys()
 });
+
 function renderOneToy(toys){
   const toyCollection = document.getElementById("toy-collection")
   const toyCard = document.createElement('div')
@@ -25,6 +27,8 @@ function renderOneToy(toys){
   <button class="like-btn" id="${toys.id}">Like ❤️</button>
   `
   toyCollection.appendChild(toyCard)
+  activatingLikeButton(toys)
+
 }
 
 
@@ -36,7 +40,6 @@ function fetchAndysToys(){
 
 document.querySelector("form").addEventListener('submit', (e) =>{
   e.preventDefault()
-  const toyInfo = {  }
   const nameInput = document.querySelector(".input-text").value
   const imageInput = document.querySelector(".input-txt").value
   
@@ -53,7 +56,23 @@ document.querySelector("form").addEventListener('submit', (e) =>{
   })
 })
 
-// const likeBtn = document.querySelectorAll(`.like-btn`)
-// for (const btn of likeBtn) {
-//    console.log(btn)
-// }
+function activatingLikeButton(toys){
+  let likeBtn = document.getElementById(`${toys.id}`)
+  let likeCount = toys.likes
+  console.log(likeBtn)
+  likeBtn.addEventListener('click', (e)=>{
+    e.preventDefault()
+  let addLike = likeCount + 1
+    fetch(`http://localhost:3000/toys/${toys.id}`, {
+    method: "PATCH",
+    headers:{
+      "content-type":"application/json",
+      Accept: "applicaton/json"
+    },
+    body:JSON.stringify({
+        "likes": addLike
+  })
+  })
+
+  })
+}
